@@ -194,17 +194,20 @@ button{font:inherit;cursor:pointer}
 
 /* =================== 07 · Manifiesto =================== */
 .manifiesto{padding:var(--borde) var(--marco-der) var(--borde) var(--marco-izq)}
-.mani{position:relative;aspect-ratio:1408/991;border-radius:var(--radius-s);overflow:hidden;background:var(--fondo-calido);container-type:inline-size}
-.mani .abs{position:absolute;left:calc(var(--x)/1408*100%);top:calc(var(--y)/991*100%);width:calc(var(--w)/1408*100%)}
+/* Coordenadas del Figma (lienzo 1408 × 991). --ox/--oy/--cw/--ch definen el encuadre:
+   en desktop es el lienzo completo; en mobile la figura recorta la zona de anillos + flor. */
+.mani{--ox:0;--oy:0;--cw:1408;--ch:991;position:relative;aspect-ratio:1408/991;border-radius:var(--radius-s);overflow:hidden;background:var(--fondo-calido);container-type:inline-size}
+.mani .abs{position:absolute;left:calc((var(--x) - var(--ox))/var(--cw)*100%);top:calc((var(--y) - var(--oy))/var(--ch)*100%);width:calc(var(--w)/var(--cw)*100%)}
+.mani__fig{position:absolute;inset:0;pointer-events:none}
 .mani .abs svg{width:100%;height:auto;overflow:visible}
 .linea-in{display:block}
 .mani__titulo{left:50% !important;transform:translateX(-50%);text-align:center;color:var(--tierra);font-size:clamp(28px,3.55cqw,50px) !important}
-.mani__flor{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:calc(300/1408*100%);aspect-ratio:1/2}
+.mani__flor{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:calc(300/var(--cw)*100%);aspect-ratio:1/2}
 .mani__flor img{width:100%;height:100%;object-fit:contain;object-position:bottom}
 .onda{transform-origin:center}
-.pulso{position:absolute;left:calc(504/1408*100%);top:calc(450/991*100%);width:calc(400/1408*100%);aspect-ratio:1;border:1.5px solid var(--verde-700);border-radius:50%;opacity:0;pointer-events:none}
-.punto{position:absolute;width:calc(12/1408*100%);aspect-ratio:1;border-radius:50%;background:var(--verde-700);left:calc(var(--x)/1408*100%);top:calc(var(--y)/991*100%)}
-.conector{position:absolute;height:1px;background:var(--verde-500);left:calc(var(--x)/1408*100%);top:calc(var(--y)/991*100%);width:calc(var(--w)/1408*100%)}
+.pulso{position:absolute;left:calc((504 - var(--ox))/var(--cw)*100%);top:calc((450 - var(--oy))/var(--ch)*100%);width:calc(400/var(--cw)*100%);aspect-ratio:1;border:1.5px solid var(--verde-700);border-radius:50%;opacity:0;pointer-events:none}
+.punto{position:absolute;width:calc(12/var(--cw)*100%);aspect-ratio:1;border-radius:50%;background:var(--verde-700);left:calc((var(--x) - var(--ox))/var(--cw)*100%);top:calc((var(--y) - var(--oy))/var(--ch)*100%)}
+.conector{position:absolute;height:1px;background:var(--verde-500);left:calc((var(--x) - var(--ox))/var(--cw)*100%);top:calc((var(--y) - var(--oy))/var(--ch)*100%);width:calc(var(--w)/var(--cw)*100%)}
 .anot{display:flex;flex-direction:column;gap:8px}
 .anot--der{text-align:right}
 .anot b{font:500 13px/1.4 var(--body);letter-spacing:.12em;color:var(--verde-800)}
@@ -377,20 +380,19 @@ button{font:inherit;cursor:pointer}
   .mani{aspect-ratio:auto;padding:64px var(--interior) 0;display:flex;flex-direction:column;align-items:center}
   .mani .abs{position:static;width:auto}
   .mani__titulo{transform:none;max-width:560px;font-size:clamp(28px,6vw,40px) !important}
-  .mani .ondas-m{position:relative;width:min(420px,100%);aspect-ratio:1;margin:40px 0 0}
-  .mani .ondas-m>.abs{position:absolute;left:50%;top:50%;translate:-50% -50%}
-  .mani .ondas-m>.o3{width:100%}
-  .mani .ondas-m>.o2{width:77.8%}
-  .mani .ondas-m>.o1{width:55.6%}
-  .mani .ondas-m>.lente{width:63.9%}
-  .mani .ondas-m>.brillo{width:125%}
-  .mani .punto,.mani .conector{display:none}
-  .mani .anots{display:flex;flex-direction:column;gap:24px;margin-top:40px;width:100%;max-width:420px}
-  .mani .anot,.mani .anot--der{text-align:left;align-items:flex-start}
-  .mani .anot p{font-size:17px}
-  .mani__flor{position:relative;left:auto;transform:none;width:150px;margin-top:32px;order:3}
-  .mani .anots{order:2}
-  .pulso{display:none}
+  /* Leyenda: las tres ideas, numeradas como los puntos de la figura */
+  .mani .anots{order:1;display:flex;flex-direction:column;margin-top:32px;width:100%;max-width:440px;border-top:1px solid rgba(96,74,46,.18)}
+  .mani .anot,.mani .anot--der{display:grid;grid-template-columns:44px 1fr;align-items:baseline;gap:0;text-align:left;padding:14px 0;border-bottom:1px solid rgba(96,74,46,.18)}
+  .mani .anot b{display:inline-flex;align-items:center;gap:7px}
+  .mani .anot b::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--verde-700);flex:none;translate:0 -1px}
+  .mani .anot p{font-size:16px;line-height:1.5}
+  /* Figura: el mismo encuadre del desktop (anillos + flor apoyada en el borde inferior) */
+  .mani .mani__fig{--ox:284;--oy:230;--cw:840;--ch:761;order:2;position:relative;inset:auto;flex:none;width:min(calc(100% + 2*var(--interior)),600px);aspect-ratio:840/761;margin-top:24px}
+  .mani .mani__fig .abs{position:absolute;width:calc(var(--w)/var(--cw)*100%)}
+  .mani .conector{display:none}
+  .mani .punto{width:9px;translate:-50% -50%;left:calc((var(--x) + 6 - var(--ox))/var(--cw)*100%);top:calc((var(--y) + 6 - var(--oy))/var(--ch)*100%);box-shadow:0 0 0 3px rgba(234,222,208,.85)}
+  .mani .punto::after{content:attr(data-n);position:absolute;top:50%;translate:0 -50%;right:calc(100% + 7px);font:500 11px/1 var(--body);letter-spacing:.12em;color:var(--verde-800)}
+  .mani .punto.p2::after{right:auto;left:calc(100% + 7px)}
 }
 @media (max-width:640px){
   :root{--nav-inset:8px;--nav-pad:16px}
@@ -591,18 +593,18 @@ button{font:inherit;cursor:pointer}
   <section class="manifiesto" aria-labelledby="mani-titulo">
     <div class="mani" data-obs>
       <h2 class="abs mani__titulo t-titulo" id="mani-titulo" style="--x:704;--y:104;--w:760">El bienestar no es un privilegio, es una posibilidad</h2>
-      <div class="ondas-m">
+      <div class="mani__fig" aria-hidden="true">
         <div class="abs brillo" style="--x:254;--y:190;--w:900"><svg viewBox="0 0 900 900" fill="none" aria-hidden="true"><circle cx="450" cy="450" r="450" fill="url(#gBrillo)"/><defs><radialGradient id="gBrillo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(450 450) scale(450)"><stop stop-color="#F5EAB0" stop-opacity=".9"/><stop offset="1" stop-color="#F5EAB0" stop-opacity="0"/></radialGradient></defs></svg></div>
         <div class="abs onda o3" style="--x:344;--y:290;--w:720"><svg viewBox="0 0 720 720" fill="none" aria-hidden="true"><circle cx="360" cy="360" r="359.25" stroke="#5E8F76" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>
         <div class="abs onda o2" style="--x:424;--y:370;--w:560"><svg viewBox="0 0 560 560" fill="none" aria-hidden="true"><circle cx="280" cy="280" r="279.25" stroke="#A9C7B6" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>
         <div class="abs onda o1" style="--x:504;--y:450;--w:400"><svg viewBox="0 0 400 400" fill="none" aria-hidden="true"><circle cx="200" cy="200" r="199.25" stroke="#3B745B" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>
         <div class="abs lente" style="--x:474;--y:420;--w:460;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.8);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)"></div>
         <span class="pulso" aria-hidden="true"></span><span class="pulso b" aria-hidden="true"></span>
+        <div class="mani__flor"><img src="assets/img/flor.png" alt="" loading="lazy"></div>
+        <span class="punto p1" data-n="01" style="--x:371;--y:504"></span><span class="conector c1" style="--x:300;--y:509;--w:77"></span>
+        <span class="punto p2" data-n="02" style="--x:975;--y:614"></span><span class="conector c2" style="--x:987;--y:619;--w:77"></span>
+        <span class="punto p3" data-n="03" style="--x:538;--y:764"></span><span class="conector c3" style="--x:300;--y:769;--w:238"></span>
       </div>
-      <div class="mani__flor"><img src="assets/img/flor.png" alt="" loading="lazy"></div>
-      <span class="punto p1" style="--x:371;--y:504"></span><span class="conector c1" style="--x:300;--y:509;--w:77"></span>
-      <span class="punto p2" style="--x:975;--y:614"></span><span class="conector c2" style="--x:987;--y:619;--w:77"></span>
-      <span class="punto p3" style="--x:538;--y:764"></span><span class="conector c3" style="--x:300;--y:769;--w:238"></span>
       <div class="anots">
         <div class="abs anot anot--der a1" style="--x:20;--y:470;--w:264"><b>01</b><p>La medicina empieza antes del diagnóstico.</p></div>
         <div class="abs anot a2" style="--x:1080;--y:580;--w:240"><b>02</b><p>La salud nace del autoconocimiento.</p></div>
